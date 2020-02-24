@@ -8,21 +8,13 @@ enum Type { number, string, bool, list, map, nil, unknown }
 class JSONNilReason extends Error {
   final String message;
 
-  static wrongType() {
-    return JSONNilReason('wrong type');
-  }
+  JSONNilReason.wrongType() : message = 'wrong type';
 
-  static notExist() {
-    return JSONNilReason('Dictionary key does not exist.');
-  }
+  JSONNilReason.notExist() : message = 'Dictionary key does not exist.';
 
-  static nullObject() {
-    return JSONNilReason('null object');
-  }
+  JSONNilReason.nullObject() : message = 'null object';
 
-  static outOfBounds() {
-    return JSONNilReason('Array Index is out of bounds.');
-  }
+  JSONNilReason.outOfBounds() : message = 'Array Index is out of bounds.';
 
   JSONNilReason(this.message);
 }
@@ -41,12 +33,23 @@ class JSON {
   JSONNilReason error;
 
   // 原始值
-  dynamic value() => _value;
+  dynamic get value => _value;
 
   // num
   num get number => type == Type.number ? _rawNum : null;
 
-  num get numberValue => _rawNum;
+  num get numberValue {
+    switch (type) {
+      case Type.number:
+        return _rawNum;
+      case Type.string:
+        return num.tryParse(_rawString) ?? 0;
+      case Type.bool:
+        return booleanValue ? 1 : 0;
+      default:
+        return 0;
+    }
+  }
 
   // int
   int get integer => number == null ? null : number.toInt();
@@ -61,12 +64,36 @@ class JSON {
   // string
   String get string => type == Type.string ? _rawString : null;
 
-  String get stringValue => _rawString;
+  String get stringValue {
+    switch (type) {
+      case Type.string:
+        return _rawString;
+      case Type.number:
+        return '$numberValue';
+      case Type.bool:
+        return '$booleanValue';
+      default:
+        return '';
+    }
+  }
 
   // bool
   bool get boolean => type == Type.bool ? _rawBool : null;
 
-  bool get booleanValue => _rawBool;
+  bool get booleanValue {
+    switch (type) {
+      case Type.bool:
+        return _rawBool ?? false;
+      case Type.string:
+        return ['true', 'y', 't', 'yes', '1']
+            .where((element) => element.contains(_rawString.toLowerCase()))
+            .isNotEmpty;
+      case Type.number:
+        return number.toInt() == 1;
+      default:
+        return false;
+    }
+  }
 
   UnmodifiableListView<JSON> get list => type == Type.list
       ? UnmodifiableListView<JSON>(_rawList.map((i) => JSON(i)))
@@ -100,7 +127,7 @@ class JSON {
 
   static JSON nil = JSON(null);
 
-  bool isNull() => type == Type.nil;
+  bool get isNull => type == Type.nil;
 
   JSON operator [](dynamic k) {
     var r = JSON.nil;
