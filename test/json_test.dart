@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:test/test.dart';
 
 import '../lib/json.dart';
@@ -33,5 +35,17 @@ void main() {
 
     expect(2, j7.mapObject.length);
     expect(1, j7['a'].integerValue);
+
+    final j8 = JSON({
+      'a': {
+        'b': [
+          {
+            'c': [1, 2, 3, 4]
+          }
+        ]
+      }
+    });
+
+    expect(3, j8[['a', 'b', 0, 'c', 2]].integerValue);
   });
 }

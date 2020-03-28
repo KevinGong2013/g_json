@@ -144,7 +144,7 @@ class JSON {
       }
       return r;
     } else if (k is List) {
-      return JSON.nil;
+      return k.fold(this, (j, sk) => j[sk]);
     } else if (k is int) {
       if (type == Type.list) {
         if (k < _rawList.length) {
