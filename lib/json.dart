@@ -159,6 +159,7 @@ class JSON {
   }
 
   JSON(dynamic value) {
+    value = _unwrap(value);
     if (value is String) {
       type = Type.string;
       _rawString = value;
@@ -190,5 +191,17 @@ class JSON {
       return JSON.nil;
     }
     return JSON(json.decode(jsonStr));
+  }
+
+  dynamic _unwrap(object) {
+    if (object is JSON) {
+      return _unwrap(object.value);
+    } else if (object is List) {
+      return object.map(_unwrap).toList();
+    } else if (object is Map) {
+      return object.map((k, v) => MapEntry(k, _unwrap(v)));
+    } else {
+      return object;
+    }
   }
 }

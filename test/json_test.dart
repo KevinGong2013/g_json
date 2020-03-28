@@ -21,5 +21,17 @@ void main() {
     expect('3', j3.stringValue);
     expect(false, j3.booleanValue);
     expect(3, j3.numberValue);
+
+    final j4 = JSON.parse('[1,2,3,4]');
+    final j5 = JSON(j4.listValue);
+
+    expect(4, j5.listValue.length);
+    expect(1, j5.listObject.first);
+
+    final j6 = JSON.parse('{"a": 1, "b": "2"}');
+    final j7 = JSON(j6.map);
+
+    expect(2, j7.mapObject.length);
+    expect(1, j7['a'].integerValue);
   });
 }
