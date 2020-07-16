@@ -1,11 +1,12 @@
 name: g_json
-description: json package spirit by SwiftyJSON.
+description: g_json makes it easy to get(set will support in future) value from JSON data in dart2.
 version: 1.0.0
 # author: gix.gong
 homepage: https://github.com/KevinGong2013/json
 
 dev_dependencies:
     test: ^1.12.0
+    pedantic: ^1.9.0
 
 environment:
     sdk: ">=2.6.0 <3.0.0"
