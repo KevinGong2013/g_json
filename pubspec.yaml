@@ -1,11 +1,11 @@
 name: json
 description: json package spirit by SwiftyJSON.
 version: 0.1.0
-author:
-homepage:
+# author: gix.gong
+homepage: https://github.com/KevinGong2013/json
 
 dev_dependencies:
     test: ^1.12.0
 
 environment:
-    sdk: '>=2.6.0 <3.0.0'
+    sdk: ">=2.6.0 <3.0.0"
