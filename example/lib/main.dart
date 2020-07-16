@@ -1,7 +1,7 @@
+// ignore: avoid_relative_lib_imports
 import '../../lib/g_json.dart';
 
-main(List<String> args) {
-  
+void main(List<String> args) {
   final jsonStr = '''
   {
     "_id": "5f0fd54e54044a55385a0f31",

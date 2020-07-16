@@ -26,7 +26,7 @@ enum Type { string, number, bool, list, map, nil, unknown }
 class JSON {
   dynamic _value;
   Type _type;
-  
+
   List<dynamic> _rawList = [];
   Map<String, dynamic> _rawMap = {};
   String _rawString = '';
@@ -42,7 +42,7 @@ class JSON {
   // Object in json
   dynamic get value => _value;
 
-  /// Optional num 
+  /// Optional num
   num get number => type == Type.number ? _rawNum : null;
 
   /// Non-optional num
