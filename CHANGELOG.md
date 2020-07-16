@@ -1,3 +1,7 @@
+## [1.1.0] - 2020-07-16
+
+* update repo name.
+
 ## [1.0.3] - 2020-07-16
 
 * update library name to g_json.
