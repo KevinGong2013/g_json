@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import '../lib/json.dart';
+import '../lib/g_json.dart';
 
 void main() {
   test('json', () {
