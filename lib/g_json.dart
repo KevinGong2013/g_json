@@ -41,6 +41,33 @@ class JSON {
 
   // Object in json
   dynamic get value => _value;
+  set value(dynamic newValue) {
+    final unwrappedValue = _unwrap(newValue);
+    if (unwrappedValue is String) {
+      _type = Type.string;
+      _rawString = unwrappedValue;
+    } else if (unwrappedValue is int || unwrappedValue is num) {
+      _type = Type.number;
+      _rawNum = unwrappedValue;
+    } else if (unwrappedValue is List) {
+      _type = Type.list;
+      _rawList = unwrappedValue;
+    } else if (unwrappedValue is bool) {
+      _type = Type.bool;
+      _rawBool = unwrappedValue;
+    } else if (unwrappedValue is Map) {
+      _type = Type.map;
+      _rawMap = Map.from(unwrappedValue);
+    } else {
+      _type = Type.unknown;
+      error = _JSONNilReason('${unwrappedValue.toString()}');
+    }
+    _value = unwrappedValue;
+    if (unwrappedValue == null) {
+      _type = Type.nil;
+      error = _JSONNilReason.nullObject();
+    }
+  }
 
   /// Optional num
   num get number => type == Type.number ? _rawNum : null;
@@ -177,11 +204,9 @@ class JSON {
   void operator []=(dynamic key, dynamic dNewValue) {
     final newValue = JSON(dNewValue);
     if (key is int && type == Type.list && key < _rawList.length && newValue.error == null) {
-      _rawList[key] = newValue.value;
-      _value = _rawList;
+      value = _rawList..[key] = newValue.value;
     } else if (key is String && type == Type.map && newValue.error == null) {
-      _rawMap[key] = newValue.value;
-      _value = _rawMap;
+      value = _rawMap..[key] = newValue.value;
     } else if (key is List) {
       switch (key.length) {
         case 0:
@@ -208,32 +233,8 @@ class JSON {
   int get hashCode => _value.hashCode;
 
   /// Only support JSON types object.
-  JSON(dynamic value) {
-    value = _unwrap(value);
-    if (value is String) {
-      _type = Type.string;
-      _rawString = value;
-    } else if (value is int || value is num) {
-      _type = Type.number;
-      _rawNum = value;
-    } else if (value is List) {
-      _type = Type.list;
-      _rawList = value;
-    } else if (value is bool) {
-      _type = Type.bool;
-      _rawBool = value;
-    } else if (value is Map) {
-      _type = Type.map;
-      _rawMap = Map.from(value);
-    } else {
-      _type = Type.unknown;
-      error = _JSONNilReason('${value.toString()}');
-    }
-    _value = value;
-    if (value == null) {
-      _type = Type.nil;
-      error = _JSONNilReason.nullObject();
-    }
+  JSON(dynamic obj) {
+    value = obj;
   }
 
   /// Parse json string as JSON object
