@@ -97,9 +97,7 @@ class JSON {
       case Type.bool:
         return _rawBool ?? false;
       case Type.string:
-        return ['true', 'y', 't', 'yes', '1']
-            .where((element) => element.contains(_rawString.toLowerCase()))
-            .isNotEmpty;
+        return ['true', 'y', 't', 'yes', '1'].where((element) => element.contains(_rawString.toLowerCase())).isNotEmpty;
       case Type.number:
         return number.toInt() == 1;
       default:
@@ -108,30 +106,23 @@ class JSON {
   }
 
   /// Optional [JSON]
-  UnmodifiableListView<JSON> get list => type == Type.list
-      ? UnmodifiableListView<JSON>(_rawList.map((i) => JSON(i)))
-      : null;
+  UnmodifiableListView<JSON> get list => type == Type.list ? UnmodifiableListView<JSON>(_rawList.map((i) => JSON(i))) : null;
 
   /// Non-optional [JSON]
   UnmodifiableListView<JSON> get listValue => list ?? UnmodifiableListView([]);
 
   /// Optional [dynamic]
-  UnmodifiableListView<dynamic> get listObject =>
-      type == Type.list ? UnmodifiableListView<dynamic>(_rawList) : null;
+  UnmodifiableListView<dynamic> get listObject => type == Type.list ? UnmodifiableListView<dynamic>(_rawList) : null;
 
   /// Optional `<String, JSON>{}`
-  UnmodifiableMapView<String, JSON> get map => type == Type.map
-      ? UnmodifiableMapView<String, JSON>(
-          _rawMap.map((k, v) => MapEntry(k, JSON(v))))
-      : null;
+  UnmodifiableMapView<String, JSON> get map =>
+      type == Type.map ? UnmodifiableMapView<String, JSON>(_rawMap.map((k, v) => MapEntry(k, JSON(v)))) : null;
 
   /// Non-optional `<String, JSON>{}`
-  UnmodifiableMapView<String, JSON> get mapValue =>
-      map ?? UnmodifiableMapView({});
+  UnmodifiableMapView<String, JSON> get mapValue => map ?? UnmodifiableMapView({});
 
   /// Optional `<String, dynamic>{}`
-  UnmodifiableMapView<String, dynamic> get mapObject =>
-      type == Type.map ? UnmodifiableMapView<String, dynamic>(_rawMap) : null;
+  UnmodifiableMapView<String, dynamic> get mapObject => type == Type.map ? UnmodifiableMapView<String, dynamic>(_rawMap) : null;
 
   // JSON string
   String rawString() {
@@ -148,14 +139,14 @@ class JSON {
   /// Convernice method `type == Type.nil`
   bool get isNull => type == Type.nil;
 
-  /// if `k` is `String` & `type` is `map` return json whose object is `map[k]` , otherwise return `json.nil` with error.
-  /// if `k` is `int` & `type` is `list` return json whose object is `list[k]`, otherwise return `json.nil` with error.
-  /// if `k` is `List<String/int>` recursive aboves.
-  JSON operator [](dynamic k) {
+  /// if `key` is `String` & `type` is `map` return json whose object is `map[k]` , otherwise return `json.nil` with error.
+  /// if `key` is `int` & `type` is `list` return json whose object is `list[k]`, otherwise return `json.nil` with error.
+  /// if `key` is `List<String/int>` recursive aboves.
+  JSON operator [](dynamic key) {
     var r = JSON.nil;
-    if (k is String) {
+    if (key is String) {
       if (type == Type.map) {
-        final o = _rawMap[k];
+        final o = _rawMap[key];
         if (o == null) {
           r.error = _JSONNilReason.notExist();
         } else {
@@ -165,12 +156,12 @@ class JSON {
         r.error = _JSONNilReason.wrongType();
       }
       return r;
-    } else if (k is List) {
-      return k.fold(this, (j, sk) => j[sk]);
-    } else if (k is int) {
+    } else if (key is List) {
+      return key.fold(this, (j, sk) => j[sk]);
+    } else if (key is int) {
       if (type == Type.list) {
-        if (k < _rawList.length) {
-          return JSON(_rawList[k]);
+        if (key < _rawList.length) {
+          return JSON(_rawList[key]);
         } else {
           r.error = _JSONNilReason.outOfBounds();
         }
@@ -178,6 +169,34 @@ class JSON {
       return r;
     }
     return r;
+  }
+
+  /// if `key` is `String` & `type` is `map` set map value
+  /// if `key` is `int` & `type` is `list` set list value
+  /// if `key` is `List<String/int>` recursive aboves.
+  void operator []=(dynamic key, dynamic dNewValue) {
+    final newValue = JSON(dNewValue);
+    if (key is int && type == Type.list && key < _rawList.length && newValue.error == null) {
+      _rawList[key] = newValue.value;
+      _value = _rawList;
+    } else if (key is String && type == Type.map && newValue.error == null) {
+      _rawMap[key] = newValue.value;
+      _value = _rawMap;
+    } else if (key is List) {
+      switch (key.length) {
+        case 0:
+          return;
+        case 1:
+          this[key[0]] = newValue;
+          break;
+        default:
+          final path = List.from(key);
+          path.removeAt(0);
+          final nextJSON = this[key[0]];
+          nextJSON[path] = newValue;
+          this[key[0]] = nextJSON;
+      }
+    }
   }
 
   /// Only support JSON types object.

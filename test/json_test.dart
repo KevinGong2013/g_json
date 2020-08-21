@@ -1,8 +1,34 @@
+import 'dart:math';
+
 import 'package:test/test.dart';
+// ignore: avoid_relative_lib_imports
 import '../lib/g_json.dart';
 
 void main() {
-  test('json', () {
+  test('[setter] json', () {
+    final j1 = JSON({'a': 1, 'b': 2});
+    j1['a'] = 2;
+
+    expect(2, j1['a'].integerValue);
+
+    final j2 = JSON([1, 2, 3, 4, 5]);
+    j2[0] = 0;
+    expect(0, j2[0].integerValue);
+
+    final j3 = JSON({
+      'a': {
+        'b': [
+          {
+            'c': [1, 2, 3, 4]
+          }
+        ]
+      }
+    });
+    final path = ['a', 'b', 0, 'c', 3];
+    j3[path] = -1;
+    expect(-1, j3[path].integerValue);
+  });
+  test('[getter] json', () {
     final j1 = JSON(3);
 
     expect('3', j1.stringValue);
