@@ -1,10 +1,19 @@
-import 'dart:math';
-
 import 'package:test/test.dart';
 // ignore: avoid_relative_lib_imports
 import '../lib/g_json.dart';
 
 void main() {
+  test('equal', () {
+    final j1 = JSON(0);
+    final j2 = j1;
+    assert(j1 == j2);
+
+    final j3 = JSON(0);
+    assert(j3 == j1);
+
+    final j4 = JSON(1);
+    assert(j4 != j3);
+  });
   test('[setter] json', () {
     final j1 = JSON({'a': 1, 'b': 2});
     j1['a'] = 2;

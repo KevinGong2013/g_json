@@ -199,6 +199,14 @@ class JSON {
     }
   }
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) || (other is JSON && type == other.type && value == other.value);
+  }
+
+  @override
+  int get hashCode => _value.hashCode;
+
   /// Only support JSON types object.
   JSON(dynamic value) {
     value = _unwrap(value);
