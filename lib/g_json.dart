@@ -256,3 +256,7 @@ class JSON {
     }
   }
 }
+
+extension JSONIterable on JSON {
+  Iterable<MapEntry<String, dynamic>> get entries => type == Type.map ? _rawMap.entries : null;
+}

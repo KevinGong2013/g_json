@@ -3,7 +3,13 @@ import 'package:test/test.dart';
 import '../lib/g_json.dart';
 
 void main() {
-  test('equal', () {
+  test('[iterable] json', () {
+    final j2 = JSON({'a': 1, 'b': 2, 'c': 3}).entries;
+    for (final j in j2) {
+      print(j.toString());
+    }
+  });
+  test('[equal] json', () {
     final j1 = JSON(0);
     final j2 = j1;
     assert(j1 == j2);
