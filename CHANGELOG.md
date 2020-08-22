@@ -1,3 +1,9 @@
+## [1.2.0] - 2020-07-16
+
+* add setter.
+* override == operator
+* add `Iterable` extension
+
 ## [1.1.0] - 2020-07-16
 
 * update repo name.
