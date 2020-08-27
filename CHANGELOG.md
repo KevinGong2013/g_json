@@ -1,3 +1,8 @@
+## [1.2.1] - 2020-08-27
+
+* add dynamic member support.
+* refine docs.
+
 ## [1.2.0] - 2020-07-16
 
 * add setter.
