@@ -6,15 +6,24 @@ import 'dart:convert';
 class _JSONNilReason extends Error {
   final String message;
 
-  _JSONNilReason.wrongType() : message = 'wrong type';
+  _JSONNilReason.wrongType(dynamic key, bool map)
+      : message =
+            '${map ? 'Map($key)' : 'List($key)'} failure, It is not a ${map ? 'Map' : 'List'}';
 
-  _JSONNilReason.notExist() : message = 'Dictionary key does not exist.';
+  _JSONNilReason.notExist(String key)
+      : message = 'Map($key) key does not exist.';
 
   _JSONNilReason.nullObject() : message = 'null object';
 
-  _JSONNilReason.outOfBounds() : message = 'Array Index is out of bounds.';
+  _JSONNilReason.outOfBounds(int index)
+      : message = 'List($index) Index is out of bounds.';
 
   _JSONNilReason(this.message);
+
+  @override
+  String toString() {
+    return message;
+  }
 }
 
 /// JSON's type definitions.
@@ -124,7 +133,9 @@ class JSON {
       case Type.bool:
         return _rawBool ?? false;
       case Type.string:
-        return ['true', 'y', 't', 'yes', '1'].where((element) => element.contains(_rawString.toLowerCase())).isNotEmpty;
+        return ['true', 'y', 't', 'yes', '1']
+            .where((element) => element.contains(_rawString.toLowerCase()))
+            .isNotEmpty;
       case Type.number:
         return number.toInt() == 1;
       default:
@@ -133,23 +144,30 @@ class JSON {
   }
 
   /// Optional [JSON]
-  UnmodifiableListView<JSON> get list => type == Type.list ? UnmodifiableListView<JSON>(_rawList.map((i) => JSON(i))) : null;
+  UnmodifiableListView<JSON> get list => type == Type.list
+      ? UnmodifiableListView<JSON>(_rawList.map((i) => JSON(i)))
+      : null;
 
   /// Non-optional [JSON]
   UnmodifiableListView<JSON> get listValue => list ?? UnmodifiableListView([]);
 
   /// Optional [dynamic]
-  UnmodifiableListView<dynamic> get listObject => type == Type.list ? UnmodifiableListView<dynamic>(_rawList) : null;
+  UnmodifiableListView<dynamic> get listObject =>
+      type == Type.list ? UnmodifiableListView<dynamic>(_rawList) : null;
 
   /// Optional `<String, JSON>{}`
-  UnmodifiableMapView<String, JSON> get map =>
-      type == Type.map ? UnmodifiableMapView<String, JSON>(_rawMap.map((k, v) => MapEntry(k, JSON(v)))) : null;
+  UnmodifiableMapView<String, JSON> get map => type == Type.map
+      ? UnmodifiableMapView<String, JSON>(
+          _rawMap.map((k, v) => MapEntry(k, JSON(v))))
+      : null;
 
   /// Non-optional `<String, JSON>{}`
-  UnmodifiableMapView<String, JSON> get mapValue => map ?? UnmodifiableMapView({});
+  UnmodifiableMapView<String, JSON> get mapValue =>
+      map ?? UnmodifiableMapView({});
 
   /// Optional `<String, dynamic>{}`
-  UnmodifiableMapView<String, dynamic> get mapObject => type == Type.map ? UnmodifiableMapView<String, dynamic>(_rawMap) : null;
+  UnmodifiableMapView<String, dynamic> get mapObject =>
+      type == Type.map ? UnmodifiableMapView<String, dynamic>(_rawMap) : null;
 
   // JSON string
   String rawString() {
@@ -158,7 +176,7 @@ class JSON {
 
   @override
   String toString() {
-    return rawString();
+    return type == Type.nil ? error.toString() : rawString();
   }
 
   static JSON nil = JSON(null);
@@ -175,12 +193,12 @@ class JSON {
       if (type == Type.map) {
         final o = _rawMap[key];
         if (o == null) {
-          r.error = _JSONNilReason.notExist();
+          r.error = _JSONNilReason.notExist(key);
         } else {
           return JSON(o);
         }
       } else {
-        r.error = _JSONNilReason.wrongType();
+        r.error = _JSONNilReason.wrongType(key, true);
       }
       return r;
     } else if (key is List) {
@@ -190,9 +208,10 @@ class JSON {
         if (key < _rawList.length) {
           return JSON(_rawList[key]);
         } else {
-          r.error = _JSONNilReason.outOfBounds();
+          r.error = _JSONNilReason.outOfBounds(key);
         }
       }
+      r.error = _JSONNilReason.wrongType(key, false);
       return r;
     }
     return r;
@@ -203,7 +222,10 @@ class JSON {
   /// if `key` is `List<String/int>` recursive aboves.
   void operator []=(dynamic key, dynamic dNewValue) {
     final newValue = JSON(dNewValue);
-    if (key is int && type == Type.list && key < _rawList.length && newValue.error == null) {
+    if (key is int &&
+        type == Type.list &&
+        key < _rawList.length &&
+        newValue.error == null) {
       value = _rawList..[key] = newValue.value;
     } else if (key is String && type == Type.map && newValue.error == null) {
       value = _rawMap..[key] = newValue.value;
@@ -225,8 +247,30 @@ class JSON {
   }
 
   @override
+  JSON noSuchMethod(Invocation invocation) {
+    if (invocation.isAccessor) {
+      final memberName = invocation.memberName.toString();
+      // flutter does not support `import 'dart:mirrors'`
+      // final memberName = MirrorSystem.getName(invocation.memberName);
+      if (memberName.startsWith('Symbol("') && memberName.endsWith('")')) {
+        final realName = memberName.substring(8, memberName.length - 2);
+        if (invocation.isSetter) {
+          // for setter realname looks like "prop=" so we remove the "="
+          final name = realName.substring(0, realName.length - 1);
+          this[name] = invocation.positionalArguments.first;
+          return this;
+        } else {
+          return this[realName];
+        }
+      }
+    }
+    return super.noSuchMethod(invocation);
+  }
+
+  @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other is JSON && type == other.type && value == other.value);
+    return identical(this, other) ||
+        (other is JSON && type == other.type && value == other.value);
   }
 
   @override
@@ -259,5 +303,6 @@ class JSON {
 }
 
 extension JSONIterable on JSON {
-  Iterable<MapEntry<String, dynamic>> get entries => type == Type.map ? _rawMap.entries : null;
+  Iterable<MapEntry<String, dynamic>> get entries =>
+      type == Type.map ? _rawMap.entries : null;
 }
