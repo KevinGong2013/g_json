@@ -61,4 +61,9 @@ void main(List<String> args) {
   final nj = JSON({'a': 'a', 'b': 1});
 
   print(nj.rawString());
+
+  // dynamic member
+  dynamic dj = nj;
+
+  print(dj.a);
 }
