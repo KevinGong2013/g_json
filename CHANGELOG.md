@@ -1,3 +1,7 @@
+## [2.0.1] - 2020-09-14
+
+* improve pub points.
+
 ## [2.0.0] - 2020-09-14
 
 * update dynamic member to rawValue

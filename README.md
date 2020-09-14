@@ -1,8 +1,20 @@
-# json
+# json  [![Pub Package](https://img.shields.io/pub/v/g_json)](https://pub.dev/packages/g_json)
 
 json package spirit by SwiftyJSON.
 
 # Example
+
+``` dart
+
+extension Person on JSON {
+  String get name => this['name'].stringValue;
+}
+
+final person = JSON.parse(jsonStringFromAnyWhere);
+
+print(person.name);
+
+```
 
 ### Initialization
 
