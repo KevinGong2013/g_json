@@ -1,3 +1,7 @@
+## [2.0.0] - 2020-09-14
+
+* update dynamic member to rawValue
+
 ## [1.2.1] - 2020-08-27
 
 * add dynamic member support.

@@ -6,13 +6,12 @@ void main() {
   test('[error] json', () {
     final json = JSON.nil;
     expect(json[0].error.toString(), 'List(0) failure, It is not a List');
-    expect(json['address'].error.toString(),
-        'Map(address) failure, It is not a Map');
+    expect(json['address'].error.toString(), 'Map(address) failure, It is not a Map');
   });
   test('[dynamic member] json', () {
     dynamic j = JSON({'a': 1, 'b': 2});
     j.a = -1;
-    assert(j.a == JSON(-1));
+    assert(j.a == -1);
   });
   test('[iterable] json', () {
     final j2 = JSON({'a': 1, 'b': 2, 'c': 3}).entries;
