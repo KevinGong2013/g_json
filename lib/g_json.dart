@@ -1,6 +1,5 @@
 library g_json;
 
-import 'dart:collection';
 import 'dart:convert';
 
 class _JSONNilReason extends Error {
