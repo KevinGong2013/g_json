@@ -172,6 +172,11 @@ class JSON {
     return jsonEncode(_value);
   }
 
+  String prettyString([String indent = ' ']) {
+    final encoder = JsonEncoder.withIndent(indent);
+    return type == Type.nil ? error.toString() : encoder.convert(value);
+  }
+
   @override
   String toString() {
     return type == Type.nil ? error.toString() : rawString();
