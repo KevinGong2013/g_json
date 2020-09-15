@@ -1,3 +1,8 @@
+## [2.0.2] - 2020-09-15
+
+* improve pub points.
+* add pretty print.
+
 ## [2.0.1] - 2020-09-14
 
 * improve pub points.
