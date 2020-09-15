@@ -5,13 +5,17 @@ import 'dart:convert';
 class _JSONNilReason extends Error {
   final String message;
 
-  _JSONNilReason.wrongType(dynamic key, bool map) : message = '${map ? 'Map($key)' : 'List($key)'} failure, It is not a ${map ? 'Map' : 'List'}';
+  _JSONNilReason.wrongType(dynamic key, bool map)
+      : message =
+            '${map ? 'Map($key)' : 'List($key)'} failure, It is not a ${map ? 'Map' : 'List'}';
 
-  _JSONNilReason.notExist(String key) : message = 'Map($key) key does not exist.';
+  _JSONNilReason.notExist(String key)
+      : message = 'Map($key) key does not exist.';
 
   _JSONNilReason.nullObject() : message = 'null object';
 
-  _JSONNilReason.outOfBounds(int index) : message = 'List($index) Index is out of bounds.';
+  _JSONNilReason.outOfBounds(int index)
+      : message = 'List($index) Index is out of bounds.';
 
   _JSONNilReason(this.message);
 
@@ -128,7 +132,9 @@ class JSON {
       case Type.bool:
         return _rawBool ?? false;
       case Type.string:
-        return ['true', 't', 'y', 'yes', '1'].where((element) => element.contains(_rawString.toLowerCase())).isNotEmpty;
+        return ['true', 't', 'y', 'yes', '1']
+            .where((element) => element.contains(_rawString.toLowerCase()))
+            .isNotEmpty;
       case Type.number:
         return number.toInt() == 1;
       default:
@@ -137,22 +143,29 @@ class JSON {
   }
 
   /// Optional [JSON]
-  List<JSON> get list => type == Type.list ? List.unmodifiable(_rawList.map((i) => JSON(i))) : null;
+  List<JSON> get list => type == Type.list
+      ? List.unmodifiable(_rawList.map((i) => JSON(i)))
+      : null;
 
   /// Non-optional [JSON]
   List<JSON> get listValue => list ?? List.unmodifiable([]);
 
   /// Optional [dynamic]
-  List<dynamic> get listObject => type == Type.list ? List.unmodifiable(_rawList) : null;
+  List<dynamic> get listObject =>
+      type == Type.list ? List.unmodifiable(_rawList) : null;
 
   /// Optional `<String, JSON>{}`
-  Map<String, JSON> get map => type == Type.map ? Map<String, JSON>.unmodifiable(_rawMap.map((k, v) => MapEntry(k, JSON(v)))) : null;
+  Map<String, JSON> get map => type == Type.map
+      ? Map<String, JSON>.unmodifiable(
+          _rawMap.map((k, v) => MapEntry(k, JSON(v))))
+      : null;
 
   /// Non-optional `<String, JSON>{}`
   Map<String, JSON> get mapValue => map ?? Map.unmodifiable({});
 
   /// Optional `<String, dynamic>{}`
-  Map<String, dynamic> get mapObject => type == Type.map ? Map<String, dynamic>.unmodifiable(_rawMap) : null;
+  Map<String, dynamic> get mapObject =>
+      type == Type.map ? Map<String, dynamic>.unmodifiable(_rawMap) : null;
 
   // JSON string
   String rawString() {
@@ -207,7 +220,10 @@ class JSON {
   /// if `key` is `List<String/int>` recursive aboves.
   void operator []=(dynamic key, dynamic dNewValue) {
     final newValue = JSON(dNewValue);
-    if (key is int && type == Type.list && key < _rawList.length && newValue.error == null) {
+    if (key is int &&
+        type == Type.list &&
+        key < _rawList.length &&
+        newValue.error == null) {
       value = _rawList..[key] = newValue.value;
     } else if (key is String && type == Type.map && newValue.error == null) {
       value = _rawMap..[key] = newValue.value;
@@ -251,7 +267,8 @@ class JSON {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || (other is JSON && type == other.type && value == other.value);
+    return identical(this, other) ||
+        (other is JSON && type == other.type && value == other.value);
   }
 
   @override
@@ -284,5 +301,6 @@ class JSON {
 }
 
 extension JSONIterable on JSON {
-  Iterable<MapEntry<String, dynamic>> get entries => type == Type.map ? _rawMap.entries : null;
+  Iterable<MapEntry<String, dynamic>> get entries =>
+      type == Type.map ? _rawMap.entries : null;
 }

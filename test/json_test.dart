@@ -6,7 +6,8 @@ void main() {
   test('[error] json', () {
     final json = JSON.nil;
     expect(json[0].error.toString(), 'List(0) failure, It is not a List');
-    expect(json['address'].error.toString(), 'Map(address) failure, It is not a Map');
+    expect(json['address'].error.toString(),
+        'Map(address) failure, It is not a Map');
   });
   test('[dynamic member] json', () {
     dynamic j = JSON({'a': 1, 'b': 2});
