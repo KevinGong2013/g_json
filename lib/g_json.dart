@@ -45,7 +45,7 @@ class JSON {
   Error error;
 
   /// JSON Type
-  Type get type => _type;
+  Type get rawJSONType => _type;
 
   // Object in json
   dynamic get value => _value;
@@ -78,11 +78,11 @@ class JSON {
   }
 
   /// Optional num
-  num get number => type == Type.number ? _rawNum : null;
+  num get number => _type == Type.number ? _rawNum : null;
 
   /// Non-optional num
   num get numberValue {
-    switch (type) {
+    switch (_type) {
       case Type.number:
         return _rawNum;
       case Type.string:
@@ -107,11 +107,11 @@ class JSON {
   double get ddoubleValue => _rawNum.toDouble();
 
   /// Optional string
-  String get string => type == Type.string ? _rawString : null;
+  String get string => _type == Type.string ? _rawString : null;
 
   /// Non-optional string
   String get stringValue {
-    switch (type) {
+    switch (_type) {
       case Type.string:
         return _rawString;
       case Type.number:
@@ -124,11 +124,11 @@ class JSON {
   }
 
   /// Optional bool
-  bool get boolean => type == Type.bool ? _rawBool : null;
+  bool get boolean => _type == Type.bool ? _rawBool : null;
 
   /// Non-optional bool
   bool get booleanValue {
-    switch (type) {
+    switch (_type) {
       case Type.bool:
         return _rawBool ?? false;
       case Type.string:
@@ -143,7 +143,7 @@ class JSON {
   }
 
   /// Optional [JSON]
-  List<JSON> get list => type == Type.list
+  List<JSON> get list => _type == Type.list
       ? List.unmodifiable(_rawList.map((i) => JSON(i)))
       : null;
 
@@ -152,10 +152,10 @@ class JSON {
 
   /// Optional [dynamic]
   List<dynamic> get listObject =>
-      type == Type.list ? List.unmodifiable(_rawList) : null;
+      _type == Type.list ? List.unmodifiable(_rawList) : null;
 
   /// Optional `<String, JSON>{}`
-  Map<String, JSON> get map => type == Type.map
+  Map<String, JSON> get map => _type == Type.map
       ? Map<String, JSON>.unmodifiable(
           _rawMap.map((k, v) => MapEntry(k, JSON(v))))
       : null;
@@ -165,7 +165,7 @@ class JSON {
 
   /// Optional `<String, dynamic>{}`
   Map<String, dynamic> get mapObject =>
-      type == Type.map ? Map<String, dynamic>.unmodifiable(_rawMap) : null;
+      _type == Type.map ? Map<String, dynamic>.unmodifiable(_rawMap) : null;
 
   // JSON string
   String rawString() {
@@ -174,18 +174,18 @@ class JSON {
 
   String prettyString([String indent = ' ']) {
     final encoder = JsonEncoder.withIndent(indent);
-    return type == Type.nil ? error.toString() : encoder.convert(value);
+    return _type == Type.nil ? error.toString() : encoder.convert(value);
   }
 
   @override
   String toString() {
-    return type == Type.nil ? error.toString() : rawString();
+    return _type == Type.nil ? error.toString() : rawString();
   }
 
   static JSON nil = JSON(null);
 
   /// Convernice method `type == Type.nil`
-  bool get isNull => type == Type.nil;
+  bool get isNull => _type == Type.nil;
 
   /// if `key` is `String` & `type` is `map` return json whose object is `map[k]` , otherwise return `json.nil` with error.
   /// if `key` is `int` & `type` is `list` return json whose object is `list[k]`, otherwise return `json.nil` with error.
@@ -193,7 +193,7 @@ class JSON {
   JSON operator [](dynamic key) {
     var r = JSON.nil;
     if (key is String) {
-      if (type == Type.map) {
+      if (_type == Type.map) {
         final o = _rawMap[key];
         if (o == null) {
           r.error = _JSONNilReason.notExist(key);
@@ -207,7 +207,7 @@ class JSON {
     } else if (key is List) {
       return key.fold(this, (j, sk) => j[sk]);
     } else if (key is int) {
-      if (type == Type.list) {
+      if (_type == Type.list) {
         if (key < _rawList.length) {
           return JSON(_rawList[key]);
         } else {
@@ -226,11 +226,11 @@ class JSON {
   void operator []=(dynamic key, dynamic dNewValue) {
     final newValue = JSON(dNewValue);
     if (key is int &&
-        type == Type.list &&
+        _type == Type.list &&
         key < _rawList.length &&
         newValue.error == null) {
       value = _rawList..[key] = newValue.value;
-    } else if (key is String && type == Type.map && newValue.error == null) {
+    } else if (key is String && _type == Type.map && newValue.error == null) {
       value = _rawMap..[key] = newValue.value;
     } else if (key is List) {
       switch (key.length) {
@@ -273,7 +273,7 @@ class JSON {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other is JSON && type == other.type && value == other.value);
+        (other is JSON && _type == other._type && value == other.value);
   }
 
   @override
@@ -307,5 +307,5 @@ class JSON {
 
 extension JSONIterable on JSON {
   Iterable<MapEntry<String, dynamic>> get entries =>
-      type == Type.map ? _rawMap.entries : null;
+      _type == Type.map ? _rawMap.entries : null;
 }

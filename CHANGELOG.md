@@ -1,3 +1,7 @@
+# [3.0.0] - 2020-10-15
+
+* Break Changes: change `type` to `rawJSONType`
+
 ## [2.0.2] - 2020-09-15
 
 * improve pub points.
