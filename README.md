@@ -6,13 +6,47 @@ json package spirit by SwiftyJSON.
 
 ``` dart
 
-extension Person on JSON {
-  String get name => this['name'].stringValue;
+// 0x00 import package
+import 'package:g_json/g_json.dart';
+
+...
+
+void someMethod() {
+
+  final jsonStr = '''
+  {
+    "_id": "5f0fd54e54044a55385a0f31",
+    "name": {
+      "first": "Coleman",
+      "last": "Evans"
+    },
+    "range": [0, 1, 2, 3, 4, 5, 6,7, 8, 9],
+    "friends": [
+      {
+        "id": 0,
+        "name": "Gibson Hull"
+      },
+      {
+        "id": 1,
+        "name": "Dunlap Bush"
+      },
+      {
+        "id": 2,
+        "name": "Bette Herman"
+      }
+    ]
+  }
+  ''';
+
+  // 0x01 parse json string to object
+  final mode = JSON.parse(jsonStr);
+
+  final _id = mode['_id'].stringValue;
+
+  final secondFriend = mode[['friends', 2]]['name'].stringValue;
+
+  print(mode.prettyString());
 }
-
-final person = JSON.parse(jsonStringFromAnyWhere);
-
-print(person.name);
 
 ```
 
