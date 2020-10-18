@@ -1,4 +1,8 @@
-# [3.0.0] - 2020-10-15
+# [3.0.1] - 2020-10-15
+
+* update README.md
+
+## [3.0.0] - 2020-10-15
 
 * Break Changes: change `type` to `rawJSONType`
 
