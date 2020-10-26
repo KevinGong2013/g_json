@@ -1,7 +1,6 @@
 name: g_json
 description: g_json makes it easy to get&set value from JSON data in dart2.
 version: 3.0.2
-author: gix
 homepage: https://github.com/KevinGong2013/json
 
 dev_dependencies:
