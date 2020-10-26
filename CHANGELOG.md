@@ -1,3 +1,8 @@
+# [3.0.2] - 2020-10-26
+
+* support remove value by key.
+* add exist method.
+
 # [3.0.1] - 2020-10-15
 
 * update README.md

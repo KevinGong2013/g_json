@@ -230,8 +230,12 @@ class JSON {
         key < _rawList.length &&
         newValue.error == null) {
       value = _rawList..[key] = newValue.value;
-    } else if (key is String && _type == Type.map && newValue.error == null) {
-      value = _rawMap..[key] = newValue.value;
+    } else if (key is String && _type == Type.map) {
+      if (newValue.error == null) {
+        value = _rawMap..[key] = newValue.value;
+      } else {
+        value = _rawMap..remove(key);
+      }
     } else if (key is List) {
       switch (key.length) {
         case 0:
@@ -268,6 +272,17 @@ class JSON {
       }
     }
     return super.noSuchMethod(invocation);
+  }
+
+  void remove(String key) {
+    this[key] = null;
+  }
+
+  /// if `type` is `map` && contains this `key` return `true`, otherwise return `false`
+  bool exist({String key}) {
+    if (key == null) return false;
+    if (_type != Type.map) return false;
+    return _rawMap.containsKey(key);
   }
 
   @override
