@@ -25,12 +25,12 @@ class _JSONNilReason extends Error {
   }
 }
 
-/// JSON's type definitions.
+/// JSON type definitions.
 ///
 /// See http://www.json.org
 enum Type { string, number, bool, list, map, nil, unknown }
 
-/// Abstrct json object
+/// abstract json object
 class JSON {
   dynamic _value;
   Type _type;
@@ -184,7 +184,7 @@ class JSON {
 
   static JSON nil = JSON(null);
 
-  /// Convernice method `type == Type.nil`
+  /// Convenience method `type == Type.nil`
   bool get isNull => _type == Type.nil;
 
   /// if `key` is `String` & `type` is `map` return json whose object is `map[k]` , otherwise return `json.nil` with error.
@@ -262,7 +262,7 @@ class JSON {
       if (memberName.startsWith('Symbol("') && memberName.endsWith('")')) {
         final realName = memberName.substring(8, memberName.length - 2);
         if (invocation.isSetter) {
-          // for setter realname looks like "prop=" so we remove the "="
+          // for setter real name looks like "prop=" so we remove the "="
           final name = realName.substring(0, realName.length - 1);
           this[name] = invocation.positionalArguments.first;
           return this;
@@ -279,7 +279,7 @@ class JSON {
   }
 
   /// if `type` is `map` && contains this `key` return `true`, otherwise return `false`
-  bool exist({String key}) {
+  bool exist(String key) {
     if (key == null) return false;
     if (_type != Type.map) return false;
     return _rawMap.containsKey(key);
