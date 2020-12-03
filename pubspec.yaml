@@ -1,11 +1,11 @@
 name: g_json
 description: g_json makes it easy to get&set value from JSON data in dart2.
-version: 3.0.2
+version: 3.1.0-nullsafety.0
 homepage: https://github.com/KevinGong2013/json
 
 dev_dependencies:
-    test: ^1.12.0
+    test: ^1.16.0-nullsafety.12
     pedantic: ^1.9.0
 
 environment:
-    sdk: ">=2.6.0 <3.0.0"
+    sdk: ">=2.12.0-0 <3.0.0"

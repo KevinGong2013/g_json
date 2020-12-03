@@ -1,9 +1,13 @@
-# [3.0.2] - 2020-10-26
+# [3.1.0-nullsafety.0] - 2020-12-03
+
+* support nullsafety
+
+## [3.0.2] - 2020-10-26
 
 * support remove value by key.
 * add exist method.
 
-# [3.0.1] - 2020-10-15
+## [3.0.1] - 2020-10-15
 
 * update README.md
 
