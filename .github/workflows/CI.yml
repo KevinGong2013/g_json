@@ -1,0 +1,67 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  check_version:
+    name: Check Version
+    runs-on: ubuntu-latest
+    outputs:
+      git_tag_name: ${{ steps.tag_check.outputs.git_tag_name }}
+    steps:
+      - uses: actions/checkout@v2 # https://github.com/actions/checkout
+      
+      - uses: CumulusDS/get-yaml-paths-action@v0.1.0
+        id: get_package_version
+        with:
+          file: pubspec.yaml
+          version: version
+      # debug
+      - name: Output package version
+        run: echo 'version:' ${{ steps.get_package_version.outputs.version }}
+
+      - uses: dudo/tag_check@v1.0.2
+        id: tag_check
+        with:
+          version: ${{ steps.get_package_version.outputs.version }}
+          git_tag_prefix: v
+
+  push_tag:
+    name: Push Tag
+    needs: check_version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 # https://github.com/actions/checkout
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CUSTOM_TAG: ${{ needs.check_version.outputs.git_tag_name }}
+
+  publish_pub:
+    name: Publish new Pub version
+    needs: check_version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Write version
+        uses: DamianReeves/write-file-action@v1.0
+        with:
+          path: lib/src/utils/version.g.dart
+          contents: String version = "${{ needs.check_version.outputs.git_tag_name }}";
+      - name: Publish Dart/Flutter package
+        uses: sakebook/actions-flutter-pub-publisher@v1.3.1
+        with:
+            credential: ${{ secrets.PUB_PUBLISHER_CREDENTIAL_JSON }}
+            flutter_package: false
+            skip_test: true
+            dry_run: false
