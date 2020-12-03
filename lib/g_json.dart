@@ -280,7 +280,6 @@ class JSON {
 
   /// if `type` is `map` && contains this `key` return `true`, otherwise return `false`
   bool exist(String key) {
-    if (key == null) return false;
     if (_type != Type.map) return false;
     return _rawMap.containsKey(key);
   }
