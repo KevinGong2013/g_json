@@ -1,4 +1,4 @@
-# [3.1.0-nullsafety.0] - 2020-12-03
+# [4.0.0-nullsafety.0] - 2020-12-03
 
 * support nullsafety
 
