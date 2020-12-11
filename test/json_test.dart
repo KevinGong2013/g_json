@@ -2,6 +2,26 @@ import 'package:g_json/g_json.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('[equal] json', () {
+    final j1 = JSON({'a': 1, 'b': 2});
+    final j2 = JSON({'b': 2, 'a': 1});
+    assert(j1 == j2);
+
+    final j3 = JSON({'a': 1, 'b': 2, 'c': 3});
+    assert(j3 != j2);
+
+    final j4 = JSON(5);
+    final j5 = JSON(5);
+
+    assert(j4 == j5);
+
+    final j6 = JSON([1, 2, 3]);
+    final j7 = JSON([1, 2, 3]);
+    assert(j6 == j7);
+
+    final j8 = JSON([1, 3, 2]);
+    assert(j7 != j8);
+  });
   test('[error] json', () {
     final json = JSON.nil;
     expect(json[0].error.toString(), 'List(0) failure, It is not a List');

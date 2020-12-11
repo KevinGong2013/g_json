@@ -179,7 +179,21 @@ class JSON {
 
   @override
   String toString() {
-    return _type == Type.nil ? error.toString() : rawString();
+    final bf = StringBuffer();
+    switch (_type) {
+      case Type.list:
+        bf.write('[${listValue.join(',')}]');
+        break;
+      case Type.map:
+        final sortedKeys = mapValue.keys.toList(growable: false);
+        sortedKeys.sort();
+        bf.write(
+            '{${sortedKeys.map((key) => '$key:${mapValue[key]}').join(',')}}');
+        break;
+      default:
+        bf.write(_value);
+    }
+    return bf.toString();
   }
 
   static JSON nil = JSON(null);
@@ -286,8 +300,7 @@ class JSON {
 
   @override
   bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other is JSON && _type == other._type && value == other.value);
+    return identical(this, other) || toString() == other.toString();
   }
 
   @override

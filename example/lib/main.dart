@@ -39,6 +39,7 @@ void main(List<String> args) {
   ''';
 
   final j = JSON.parse(jsonStr);
+  print(j.toString());
   print(j.prettyString());
 
   final _id = j['_id'].stringValue;
