@@ -1,4 +1,8 @@
-# [4.0.0-nullsafety.0] - 2020-12-03
+# [4.0.0-nullsafety.1] - 2020-12-11
+
+* sorted keys in toString()
+
+## [4.0.0-nullsafety.0] - 2020-12-03
 
 * support nullsafety
 
