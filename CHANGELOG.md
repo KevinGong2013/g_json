@@ -1,4 +1,8 @@
-# [4.0.0-nullsafety.1] - 2020-12-11
+# [4.0.0-nullsafety.2] - 2020-12-14
+
+* revert toString implements
+
+## [4.0.0-nullsafety.1] - 2020-12-11
 
 * sorted keys in toString()
 
