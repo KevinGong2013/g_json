@@ -179,21 +179,8 @@ class JSON {
 
   @override
   String toString() {
-    final bf = StringBuffer();
-    switch (_type) {
-      case Type.list:
-        bf.write('[${listValue.join(',')}]');
-        break;
-      case Type.map:
-        final sortedKeys = mapValue.keys.toList(growable: false);
-        sortedKeys.sort();
-        bf.write(
-            '{${sortedKeys.map((key) => '$key:${mapValue[key]}').join(',')}}');
-        break;
-      default:
-        bf.write(_value);
-    }
-    return bf.toString();
+    print('❌[JSON] Please use `rawString()` instead `toString()`');
+    return rawString();
   }
 
   static JSON nil = JSON(null);
@@ -298,9 +285,27 @@ class JSON {
     return _rawMap.containsKey(key);
   }
 
+  String get _identifier {
+    final bf = StringBuffer();
+    switch (_type) {
+      case Type.list:
+        bf.write('[${listValue.map((j) => j._identifier).join(',')}]');
+        break;
+      case Type.map:
+        final sortedKeys = mapValue.keys.toList(growable: false);
+        sortedKeys.sort();
+        bf.write(
+            '{${sortedKeys.map((key) => '$key:${mapValue[key]!._identifier}').join(',')}}');
+        break;
+      default:
+        bf.write(_value);
+    }
+    return bf.toString();
+  }
+
   @override
   bool operator ==(Object other) {
-    return identical(this, other) || toString() == other.toString();
+    return identical(this, other) || _identifier == JSON(other)._identifier;
   }
 
   @override
