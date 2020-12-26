@@ -33,7 +33,7 @@ enum Type { string, number, bool, list, map, nil, unknown }
 /// abstract json object
 class JSON {
   dynamic _value;
-  late Type _type;
+  Type _type;
 
   List<dynamic> _rawList = [];
   Map<String, dynamic> _rawMap = {};
@@ -42,7 +42,7 @@ class JSON {
   bool _rawBool = false;
 
   // 取值为空时的错误原因
-  Error? error;
+  Error error;
 
   /// JSON Type
   Type get rawJSONType => _type;
@@ -78,7 +78,7 @@ class JSON {
   }
 
   /// Optional num
-  num? get number => _type == Type.number ? _rawNum : null;
+  num get number => _type == Type.number ? _rawNum : null;
 
   /// Non-optional num
   num get numberValue {
@@ -95,19 +95,19 @@ class JSON {
   }
 
   /// Optional int
-  int? get integer => number?.toInt();
+  int get integer => number?.toInt();
 
   /// Non-optional int
   int get integerValue => numberValue.toInt();
 
   /// Optional double
-  double? get ddouble => number?.toDouble();
+  double get ddouble => number?.toDouble();
 
   /// Non-optional double
   double get ddoubleValue => _rawNum.toDouble();
 
   /// Optional string
-  String? get string => _type == Type.string ? _rawString : null;
+  String get string => _type == Type.string ? _rawString : null;
 
   /// Non-optional string
   String get stringValue {
@@ -124,7 +124,7 @@ class JSON {
   }
 
   /// Optional bool
-  bool? get boolean => _type == Type.bool ? _rawBool : null;
+  bool get boolean => _type == Type.bool ? _rawBool : null;
 
   /// Non-optional bool
   bool get booleanValue {
@@ -143,7 +143,7 @@ class JSON {
   }
 
   /// Optional [JSON]
-  List<JSON>? get list => _type == Type.list
+  List<JSON> get list => _type == Type.list
       ? List.unmodifiable(_rawList.map((i) => JSON(i)))
       : null;
 
@@ -151,11 +151,11 @@ class JSON {
   List<JSON> get listValue => list ?? List.unmodifiable([]);
 
   /// Optional [dynamic]
-  List<dynamic>? get listObject =>
+  List<dynamic> get listObject =>
       _type == Type.list ? List.unmodifiable(_rawList) : null;
 
   /// Optional `<String, JSON>{}`
-  Map<String, JSON>? get map => _type == Type.map
+  Map<String, JSON> get map => _type == Type.map
       ? Map<String, JSON>.unmodifiable(
           _rawMap.map((k, v) => MapEntry(k, JSON(v))))
       : null;
@@ -164,7 +164,7 @@ class JSON {
   Map<String, JSON> get mapValue => map ?? Map.unmodifiable({});
 
   /// Optional `<String, dynamic>{}`
-  Map<String, dynamic>? get mapObject =>
+  Map<String, dynamic> get mapObject =>
       _type == Type.map ? Map<String, dynamic>.unmodifiable(_rawMap) : null;
 
   // JSON string
@@ -295,7 +295,7 @@ class JSON {
         final sortedKeys = mapValue.keys.toList(growable: false);
         sortedKeys.sort();
         bf.write(
-            '{${sortedKeys.map((key) => '$key:${mapValue[key]!._identifier}').join(',')}}');
+            '{${sortedKeys.map((key) => '$key:${mapValue[key]._identifier}').join(',')}}');
         break;
       default:
         bf.write(_value);
@@ -338,6 +338,6 @@ class JSON {
 }
 
 extension JSONIterable on JSON {
-  Iterable<MapEntry<String, dynamic>>? get entries =>
+  Iterable<MapEntry<String, dynamic>> get entries =>
       _type == Type.map ? _rawMap.entries : null;
 }

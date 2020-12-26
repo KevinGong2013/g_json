@@ -10,6 +10,10 @@
 
 * support nullsafety
 
+## [3.1.0] - 2020-12-25
+
+* migrate code to stable
+
 ## [3.0.2] - 2020-10-26
 
 * support remove value by key.

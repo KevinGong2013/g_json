@@ -35,7 +35,7 @@ void main() {
   });
   test('[iterable] json', () {
     final j2 = JSON({'a': 1, 'b': 2, 'c': 3}).entries;
-    for (final j in j2!) {
+    for (final j in j2) {
       print(j.toString());
     }
   });
@@ -96,12 +96,12 @@ void main() {
     final j5 = JSON(j4.listValue);
 
     expect(4, j5.listValue.length);
-    expect(1, j5.listObject!.first);
+    expect(1, j5.listObject.first);
 
     final j6 = JSON.parse('{"a": 1, "b": "2"}');
     final j7 = JSON(j6.map);
 
-    expect(2, j7.mapObject!.length);
+    expect(2, j7.mapObject.length);
     expect(1, j7['a'].integerValue);
 
     final j8 = JSON({
