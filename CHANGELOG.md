@@ -1,4 +1,8 @@
-# [4.0.0-nullsafety.2] - 2020-12-14
+# 4.0.0
+
+* bump stable version
+  
+## [4.0.0-nullsafety.2] - 2020-12-14
 
 * revert toString implements
 
