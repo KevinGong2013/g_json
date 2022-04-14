@@ -1,4 +1,9 @@
-# 4.0.0
+# 4.1.0
+
+* fix ddoubleValue convert bug
+* remove `toString()` warning
+
+## 4.0.0
 
 * bump stable version
   
