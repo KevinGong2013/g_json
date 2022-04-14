@@ -116,4 +116,11 @@ void main() {
 
     expect(3, j8[['a', 'b', 0, 'c', 2]].integerValue);
   });
+
+  test('[parse string to num]', () {
+    final j = JSON('7.0');
+    expect(null, j.ddouble);
+    expect(7.0, j.ddoubleValue);
+    expect(7, j.integerValue);
+  });
 }

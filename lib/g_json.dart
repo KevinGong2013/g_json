@@ -104,7 +104,7 @@ class JSON {
   double? get ddouble => number?.toDouble();
 
   /// Non-optional double
-  double get ddoubleValue => _rawNum.toDouble();
+  double get ddoubleValue => numberValue.toDouble();
 
   /// Optional string
   String? get string => _type == Type.string ? _rawString : null;
@@ -179,7 +179,6 @@ class JSON {
 
   @override
   String toString() {
-    print('❌[JSON] Please use `rawString()` instead `toString()`');
     return rawString();
   }
 
