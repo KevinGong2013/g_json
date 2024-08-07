@@ -57,7 +57,7 @@ jobs:
         uses: DamianReeves/write-file-action@v1.0
         with:
           path: lib/src/utils/version.g.dart
-          contents: String version = "${{ needs.check_version.outputs.git_tag_name }}";
+          contents: String version = '${{ needs.check_version.outputs.git_tag_name }}';
       - name: Publish Dart/Flutter package
         uses: sakebook/actions-flutter-pub-publisher@v1.4.1
         with:
