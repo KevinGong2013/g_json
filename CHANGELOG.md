@@ -1,4 +1,8 @@
-# 4.1.0
+# 4.1.1
+
+* catch decode exception
+
+## 4.1.0
 
 * fix ddoubleValue convert bug
 * remove `toString()` warning
