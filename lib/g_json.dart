@@ -17,6 +17,9 @@ class _JSONNilReason extends Error {
   _JSONNilReason.outOfBounds(int index)
       : message = 'List($index) Index is out of bounds.';
 
+  _JSONNilReason.decode(dynamic error)
+      : message = 'decode error: ${error.toString()}';
+
   _JSONNilReason(this.message);
 
   @override
@@ -183,6 +186,11 @@ class JSON {
   }
 
   static JSON nil = JSON(null);
+  static JSON nilWith(Error error) {
+    final j = JSON.nil;
+    j.error = error;
+    return j;
+  }
 
   /// Convenience method `type == Type.nil`
   bool get isNull => _type == Type.nil;
@@ -320,7 +328,11 @@ class JSON {
     if (jsonStr.isEmpty) {
       return JSON.nil;
     }
-    return JSON(json.decode(jsonStr));
+    try {
+      return JSON(json.decode(jsonStr));
+    } catch (e) {
+      return JSON.nilWith(_JSONNilReason.decode(e));
+    }
   }
 
   dynamic _unwrap(object) {

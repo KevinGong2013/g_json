@@ -2,6 +2,11 @@ import 'package:g_json/g_json.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('parse unsupported string', () {
+    final j = JSON.parse(
+        '%7B%0A%20%20%22brand%22%20:%20%22Apple%22,%0A%20%20%22version%22%20:%20%22iOS%2017.5.1%22,%0A%20%20%22model%22%20:%20%22iPhone14,2%22%0A%7D');
+    assert(j.isNull);
+  });
   test('[equal] json', () {
     final j1 = JSON({'a': 1, 'b': 2});
     final j2 = JSON({'b': 2, 'a': 1});
@@ -49,6 +54,11 @@ void main() {
 
     final j4 = JSON(1);
     assert(j4 != j3);
+
+    final i = JSON(1);
+    final j = JSON(i);
+
+    assert(j.value == 1);
   });
   test('[setter] json', () {
     final j1 = JSON({'a': 1, 'b': 2});
